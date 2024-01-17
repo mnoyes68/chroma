@@ -232,6 +232,7 @@ class Chroma(nn.Module):
         design_kwargs = {k: input_args[k] for k in input_args if k in design_keys}
 
         # Perform Sampling
+        print("SAMPLING")
         sample_output = self._sample(**backbone_kwargs)
 
         if full_output:
