@@ -189,6 +189,9 @@ class CrossRMSD(nn.Module):
             F = F + 1e-5 * torch.randn_like(F)
 
         # Compute optimal quaternion by extracting leading eigenvector
+        f_zero = (F == 0).all()
+        print(f"INSPECT F: {f_zero}")
+        print(F)
         print(f"Condition Number: {torch.linalg.cond(F)}")
         if self.method == "symeig":
             L, V = torch.linalg.eigh(F)
