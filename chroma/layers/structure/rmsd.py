@@ -154,10 +154,6 @@ class CrossRMSD(nn.Module):
         batch_dims = list(X_mobile.shape)[:-2]
         X_mobile = X_mobile.reshape([-1, num_atoms, 3])
         X_target = X_target.reshape([-1, num_atoms, 3])
-        print("X VALUES")
-        print(X_mobile)
-        print(X_target)
-        print(f"MASK: {mask is not None}")
         num_batch = X_mobile.size(0)
         if mask is not None:
             mask = mask.reshape([-1, num_atoms])
@@ -174,9 +170,6 @@ class CrossRMSD(nn.Module):
             X_target_mean = torch.sum(mask_expand * X_target, 1, keepdim=True) / (
                 torch.sum(mask_expand, 1, keepdim=True) + self._eps
             )
-        
-        print(f"X MOBILE MEAN: {X_mobile_mean}")
-        print(f"X MOBILE MEAN: {X_target_mean}")
 
         X_mobile_center = X_mobile - X_mobile_mean
         X_target_center = X_target - X_target_mean
@@ -187,8 +180,6 @@ class CrossRMSD(nn.Module):
 
         # Cross-covariance matrices contract over atoms
         R = torch.einsum("sai,saj->sij", [X_mobile_center, X_target_center])
-        # print(f"R: {R}")
-        # print(R.shape)
 
         # F Matrix has leading eigenvector as optimal quaternion
         R_flat = R.reshape(num_batch, 9)
@@ -198,10 +189,7 @@ class CrossRMSD(nn.Module):
             F = F + 1e-5 * torch.randn_like(F)
 
         # Compute optimal quaternion by extracting leading eigenvector
-        # f_zero = (F == 0).all()
-        # print(f"INSPECT F: {f_zero}")
-        # print(F)
-        print(f"Condition Number: {torch.linalg.cond(F)}")
+        # print(f"Condition Number: {torch.linalg.cond(F)}")
         if self.method == "symeig":
             L, V = torch.linalg.eigh(F)
             top_eig = L[:, 3]
