@@ -157,7 +157,7 @@ class CrossRMSD(nn.Module):
         print("X VALUES")
         print(X_mobile)
         print(X_target)
-        print(f"MASK: {bool(mask)}")
+        print(f"MASK: {mask is not None}")
         num_batch = X_mobile.size(0)
         if mask is not None:
             mask = mask.reshape([-1, num_atoms])
