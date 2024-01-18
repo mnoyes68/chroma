@@ -180,6 +180,8 @@ class CrossRMSD(nn.Module):
 
         # Cross-covariance matrices contract over atoms
         R = torch.einsum("sai,saj->sij", [X_mobile_center, X_target_center])
+        print(f"R: {R}")
+        print(R.shape)
 
         # F Matrix has leading eigenvector as optimal quaternion
         R_flat = R.reshape(num_batch, 9)
@@ -189,9 +191,9 @@ class CrossRMSD(nn.Module):
             F = F + 1e-5 * torch.randn_like(F)
 
         # Compute optimal quaternion by extracting leading eigenvector
-        f_zero = (F == 0).all()
-        print(f"INSPECT F: {f_zero}")
-        print(F)
+        # f_zero = (F == 0).all()
+        # print(f"INSPECT F: {f_zero}")
+        # print(F)
         print(f"Condition Number: {torch.linalg.cond(F)}")
         if self.method == "symeig":
             L, V = torch.linalg.eigh(F)
